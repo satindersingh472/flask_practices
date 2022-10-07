@@ -1,4 +1,4 @@
-
+import json
 import mariadb
 import dbcreds
 
@@ -22,3 +22,18 @@ def conn_exe_close(statement,list):
     result = execute_statement(cursor,statement,list)
     close_connection(cursor)
     return result
+
+def get_display_results(statement,args_list):
+    results = conn_exe_close(statement,args_list)
+    if(type(results) == list):
+        results_json = json.dumps(results,default=str)
+        return results_json
+    elif(type(results) == str):
+        return results
+    else:
+        return "something went wrong"
+
+def verify_endpoints(sent_data,required_args):
+    for data in required_args:
+        if(sent_data.get(data) == None):
+            return f"The {data} argument is required"
